@@ -126,11 +126,19 @@ static void lcd_pulse(uint8_t val){
 }
 
 static void lcd_write_cmd(uint8_t cmd){
-    /* write high nibble */
+    
+	/*Wait til busy flag is 0*/
+	lcd_busy_wait();
+
+	/* write high nibble */
 	lcd_pulse( LCD_BL | (cmd >> 4)   );
+	
+	/*Wait til busy flag is 0*/
+	lcd_busy_wait();
 
     /* write low nibble */
     lcd_pulse( LCD_BL | (cmd & 0x0F) );
+	
 
     LCD_DELAY;
 }
@@ -203,7 +211,6 @@ void piface_putc(char c)
  */
 void piface_puts(char s[])
 {
-	lcd_write_cmd(SET_DDRAM_ADR);	//Set cursor to top left
     int i = 0;
 	int col = 0;		//Column of current line
 	while (s[i] != '\0')
@@ -257,6 +264,6 @@ void piface_clear(void)
 {
     /* clear display */
 	lcd_write_cmd(0x01);
-	LCD_DELAY;
+	//LCD_DELAY;
 }
 

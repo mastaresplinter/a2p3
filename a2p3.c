@@ -20,13 +20,11 @@ int main()
 {
 	char str[LINE];
 	led_init();
-	//piface_init();
-	//piface_clear();
-	uart_init();
-	uart_clear();
+	piface_init();
+	piface_clear();
 
-	//piface_puts("DT8025 - A2P3");
-	//RPI_WaitMicroSeconds(2000000);	
+	piface_puts("DT8025 - A2P3");
+	RPI_WaitMicroSeconds(2000000);	
 	
     ExpStruct* value;
   
@@ -38,9 +36,8 @@ int main()
 		{
 		value = iexp(i);
 		piface_clear();
-		sprintf(str, "%d: %d.%d\n",i, value->expInt, value->expFraction);
-		//print2piface("Hello %d", i);
-		print2uart(str);
+		sprintf(str, "%d: %d.%d",i, value->expInt, value->expFraction);
+		piface_puts(str);
 		free(value);
 		}
 	}

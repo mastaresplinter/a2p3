@@ -21,7 +21,6 @@ void led_init(){
 void led_on(){
 	/* Set the GPIO16 output high ( Turn OK LED off )*/
 	GPIO->GPSET0 |= (1 << 16);
-	RPI_WaitMicroSeconds(10000);
 #if defined( RPI3 ) && defined( IOBPLUS )	
 	/* Set the ACT LED attached to GPIO29 output high ( Turn OK LED off )
 	   Declarations in rpi-gpio.h
@@ -33,13 +32,14 @@ void led_on(){
 void led_off(){
 	/* Set the GPIO16 output high ( Turn OK LED off )*/
 	GPIO->GPCLR0 |= (1 << 16);
-	RPI_WaitMicroSeconds(10000);
+
 #if defined( RPI3 ) && defined( IOBPLUS )		
 	/* Set the ACT LED attached to GPIO29 output high ( Turn OK LED off )
 	   Declarations in rpi-gpio.h
 	*/
 	GPIO->LED_GPCLR |= (1 << LED_GPIO_BIT);
 #endif	
+
 }
 
 void led_blink(){
