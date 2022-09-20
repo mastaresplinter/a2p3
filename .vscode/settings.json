@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "piface.h": "c",
+        "stddef.h": "c"
+    }
+}

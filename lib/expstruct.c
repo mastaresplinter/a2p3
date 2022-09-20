@@ -13,7 +13,6 @@
 #include "rpi-systimer.h"
 #include "led.h"
 #include <piface.h>
-#include <string.h>
 
 int led_status = LED_OFF;
 
