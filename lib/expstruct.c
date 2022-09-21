@@ -14,8 +14,6 @@
 #include "led.h"
 #include <piface.h>
 
-int led_status = LED_OFF;
-
 double faculty(int n) 
 {
   if (n != 0) {
@@ -35,18 +33,6 @@ double ppow(int base, int exp)
   return result;
 }
 
-void led_toggle(int x)
-{
-  if (x == LED_ON)
-  {
-    led_on();
-  }
-  if (x == LED_OFF)
-  {
-    led_off();
-  }
-}
-
 ExpStruct *iexp(int x){
     ExpStruct *e = malloc(sizeof(ExpStruct));
     double term = 0;
@@ -59,8 +45,7 @@ ExpStruct *iexp(int x){
       RPI_WaitMicroSeconds(100000);
       if (i % 2 == 0)
       {
-        led_status *= -1;
-        led_toggle(led_status);
+        led_toggle();
       }
       
       term = (double)ppow(x, i) / faculty(i);

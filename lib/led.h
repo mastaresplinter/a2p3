@@ -6,6 +6,8 @@
 #define LED_H
 
 // Similar to rpi-gpio.h
+//#define LED_ON            1
+//#define LED_OFF           0
 #define LEDHH_GPFSEL      GPFSEL1
 #define LEDHH_GPFBIT      18
 #define LEDHH_GPSET       GPSET0
@@ -21,6 +23,18 @@
 void led_init();
 void led_on();
 void led_off();
+/** @brief Toggle led
+ * 
+ *  @param x -1 turns led off 1 turns led on
+ * 
+ *  @return void
+ * 
+ *  Pre-condition: none
+ * 
+ *  Post-condition: none
+ * 
+ * */
+void led_toggle();
 void led_blink();
 
 

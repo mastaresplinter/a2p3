@@ -10,9 +10,6 @@
 #ifndef _EXPSTRUCT_H
 #define _EXPSTRUCT_H
 
-#define     LED_ON      1
-#define     LED_OFF     -1
-
 struct expStruct {
 int expInt;
 int expFraction;
@@ -60,18 +57,5 @@ double ppow(int base, int exp);
  * 
  */
 ExpStruct * iexp (int x);
-
-/** @brief Toggle led
- * 
- *  @param x -1 turns led off 1 turns led on
- * 
- *  @return void
- * 
- *  Pre-condition: none
- * 
- *  Post-condition: none
- * 
- * */
-void led_toggle(int x);
 
 #endif
