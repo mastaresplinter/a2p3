@@ -66,14 +66,86 @@
 
 static const uint8_t ROW_OFFSETS[] = {0, 0x40};
 
+
+ /** @brief Initializes the piface display for instructions
+ * 
+ *  @param void
+ *
+ *	@return void
+ *
+ *  Pre-condition: none
+ * 
+ *  Post-condition: 4-bit mode enabled
+ *  function set; N = 1 for two rows, F = 0 for 5x8 display
+ *  entry mode set; I/D = 1 for direction left to right, S = 0 for shift off 
+ *  display on/off; D = 1 for display on, C = 1 for cursor on; B = 0 for blinking off
+ *  
+ *  properties: 
+ *  After initializing the piface it should be ready for instructions in 4-bit mode.
+ */
 void piface_init(void);
+
+ /** @brief Sets the cursor position
+ * 
+ *  @param col the column where the cursor will be placed
+ * 
+ *  @param row the row where the cursor will be placed
+ *
+ *	@return void
+ *
+ *  Pre-condition: The value of col is between 0 and 7, the value of row is either 0 or 1.
+ * 
+ *  Post-condition: none
+ *  
+ *  properties: 
+ *  After positioning the cursor the next character written to the screen will be placed at this position.
+ */
+void piface_set_cursor(uint8_t col, uint8_t row);
+
+ /** @brief Writes a character to the display
+ * 
+ *  @param c is the character being displayed to the screen
+ *
+ *	@return void
+ *
+ *  Pre-condition: If the integer value of c is less than 32 or greater than 126 an error will occur.
+ * 
+ *  Post-condition: none
+ *
+ *  properties: 
+ *  Write a character at the current cursor position, if the character \n the cursor will be set in the bottom left position (col = 0, row = 1)
+ */
 void piface_putc(char c);
+
+ /** @brief Writes a string to the display
+ * 
+ *  @param s is the string to be written to the display
+ *
+ *	@return void
+ *
+ *  Pre-condition: s is not NULL
+ * 
+ *  Post-condition: none
+ *
+ *  properties: 
+ *  Always start writing from top left (col = 0, row = 0), each line fits 16 characters, 32 characters in total. The maximum length of the string 
+ *  can be 32 characters. After 16 characters or \n the cursor position will be set to the bottom left (col = 0, row = 1)
+ */
 void piface_puts(char s[]);
+
+/** @brief Clears the display
+ * 
+ *	@return void
+ *
+ *  Pre-condition: none
+ * 
+ *  Post-condition: none
+ *
+ *  properties: 
+ *  After clearing the display the cursor position should return to top left (col = 0, row = 0)
+ */
 void piface_clear();
-void print2piface(const char *, ...);
 
-
-// void piface_set_cursor(uint8_t col, uint8_t row);
 // void print_at_seg(int seg, int num);
 // void printf_at_seg(int seg, const char* fmt, ...);
 #endif

@@ -126,21 +126,20 @@ static void lcd_pulse(uint8_t val){
 }
 
 static void lcd_write_cmd(uint8_t cmd){
-    
-	/*Wait til busy flag is 0*/
+    /*Wait til' busyflag is 0*/
 	lcd_busy_wait();
 
 	/* write high nibble */
 	lcd_pulse( LCD_BL | (cmd >> 4)   );
-	
-	/*Wait til busy flag is 0*/
+
+	/*Wait til' busyflag is 0*/
 	lcd_busy_wait();
 
     /* write low nibble */
     lcd_pulse( LCD_BL | (cmd & 0x0F) );
-	
 
     LCD_DELAY;
+
 }
 
 static void lcd_write_data(uint8_t data){
@@ -192,70 +191,71 @@ uint8_t piface_getc(void){
 	return mcp_read(MCP_GPIOA);
 }
 
+/** @brief Sets the cursor position
+ * 
+ */
+void piface_set_cursor(uint8_t col, uint8_t row)
+{
+	if (col < 16 && row < 2)
+	{
+		lcd_write_cmd(SET_DDRAM_ADR | (col) | (row << 6));
+	}
+	else
+		fprintf(stderr, "Error: Invalid cursor position given.");
+}
+
+
 /** @brief Writes a character
  */
 void piface_putc(char c)
 {
-	if (c == '\n')
+	if (((int)c < 32 || (int)c > 126) && c != '\n')
 	{
-		lcd_write_cmd(SET_DDRAM_ADR | (1 << 6));
+		fprintf(stderr, "Error: Character code outside of scope.");
+		return;
+	}
+	else if (c == '\n')
+	{
+		piface_set_cursor(0,1);
 	}
 	else
 	{
 		lcd_write_data(c);
 	}
-	LCD_DELAY;
 }
 
 /** @brief Writes a string
  */
 void piface_puts(char s[])
 {
-    int i = 0;
-	int col = 0;		//Column of current line
-	while (s[i] != '\0')
+	if (s == NULL)
 	{
-		if (col > 16)
+		fprintf(stderr, "Error: Null given to piface_puts()");
+		return;
+	}
+	
+	piface_set_cursor(0,0);		//Always start at top left on display
+	int col = 0;				//Column of current line
+	while (*s)		//While we have a next character in the array
+	{
+		if (col == 16)	//Check if first line is filled
 		{
 			piface_putc('\n');
-			piface_putc(s[i]);	
-		}
-		else if(col > 32)
-		{
-			fprintf(stderr, "Error: Cursor outside of screen");
-			break;
+			col = 0;
 		}
 		else
 		{
-			piface_putc(s[i]);
+			if(*s == '\n')
+				{
+					piface_putc(*s);
+					s++;
+					col = 0;
+				}
+			piface_putc(*s);	//Write current character to the display
 			col++;
-			i++;
+			s++;
 		}
 	}
-}
-
-void print2piface(const char *fmt, ...)
-{
-    va_list args;
-	va_start(args, fmt);
-	char buf[vsnprintf(NULL, 0, fmt, args) + 1]; 
-	va_end(args);
-	va_start(args, fmt);
-	vsnprintf(buf, sizeof buf, fmt, args);
-	va_end(args);
-	piface_puts(buf);
-}
-/** @brief Sets the cursor position
- * 
- */
-void piface_set_cursor(uint8_t col, uint8_t row)
-{
-	if (col < 8 && row < 2)
-	{
-		lcd_write_cmd(SET_DDRAM_ADR | (col *5) | (row << 6));
-	}
-	else
-		fprintf(stderr, "Error: Invalid cursor position given.");
 }
 
 /** @brief Clears the display
@@ -264,6 +264,5 @@ void piface_clear(void)
 {
     /* clear display */
 	lcd_write_cmd(0x01);
-	//LCD_DELAY;
 }
 
